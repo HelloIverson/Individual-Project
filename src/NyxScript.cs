@@ -2,11 +2,17 @@ public class Nyx implements Player {
   
   // Unity movement and sprite generation
   
-  void grab();
+  private int sight;
   
-  void drop();
+  @Overrides void sight();
   
-  void throw();
+  @Overrides void goalPoint();
+  
+  public void grab();
+  
+  public void drop();
+  
+  public void throw();
 
   
 }

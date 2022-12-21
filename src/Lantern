@@ -1,0 +1,8 @@
+public class Lantern implements Player {
+
+  // Unity mass and gravity stuff
+
+  
+
+
+}

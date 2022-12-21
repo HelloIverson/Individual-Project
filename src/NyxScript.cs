@@ -2,7 +2,9 @@ public class Nyx implements Player {
   
   // Unity movement and sprite generation
   
-  private int sight;
+  private float sight;
+  
+  private float velocity;
   
   @Overrides void sight();
   

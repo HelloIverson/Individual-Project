@@ -1,7 +1,6 @@
 interface Player {
-  float sight;
-  float velocity;
   
+  void sight();
   void  goalPoint();
   
 }

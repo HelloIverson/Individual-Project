@@ -126,7 +126,7 @@ class PageTwo(tk.Frame):
                 for char in line:
                     wordcount += 1
 
-            if (wordcount > 2000):
+            if (wordcount > 1500):
                 self.holder.pop(0)
                 wordcount = 0
             else:
@@ -142,12 +142,43 @@ class PageThree(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = ttk.Label(self, text = "Look back on your best days.", font=LARGE_FONT)
+        label = ttk.Label(self, text = "Look back on your recent best 3 days.", font=LARGE_FONT)
         label.pack()
+
+        label1 = ttk.Label(self, text=self.bestSearch(), wraplength=300)
+        label1.pack()
 
         button2 = ttk.Button(self, text="Main Menu",
                             command=lambda: controller.show_frame(HomePage))
         button2.pack()
+
+    def bestSearch(self):
+        tops = []
+        topDay = "1101101111111111111111111111"
+        topDays = []
+        showTopDays = ""
+        with open("days.txt", "r") as file:
+            for line in file:
+                if (int(line[0:1]) > 2):
+                    tops.append(line)
+
+        for day in tops:
+            if(int(day[0:1]) >= int(topDay[0:1])):
+                print("debug")
+                if(int(day[8:12]) >= int(topDay[8:12])):
+                    print("debug1")
+                    if(int(day[2:4]) >= int(topDay[2:4])):
+                        print("debug2")
+                        if(int(day[5:7]) >= int(topDay[5:7])):
+                            topDay = day
+                            topDays.append(day)
+                            if(len(topDays) > 3):
+                                topDays.pop(0)
+        for i in topDays:
+            showTopDays = showTopDays + i[2:]
+        return showTopDays
+
+
 
 app = App()
 app.mainloop()

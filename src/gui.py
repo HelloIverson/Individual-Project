@@ -6,6 +6,7 @@ LARGE_FONT= ("Verdana", 12)
 
 print("Debug")
 style = ttk.Style()
+style.theme_use('clam')
 style.configure("Custom.TButton",
                  foreground="white",
                  background="black",
@@ -17,7 +18,6 @@ class App(tk.Tk):
         
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
-
         container.pack(side="top", fill="both", expand = True)
 
         container.grid_rowconfigure(0, weight=1)
@@ -28,7 +28,7 @@ class App(tk.Tk):
 
         self.frames = {}
 
-        for F in (HomePage, PageOne, PageTwo):
+        for F in (HomePage, PageOne, PageTwo, PageThree):
 
             frame = F(container, self)
 
@@ -59,6 +59,10 @@ class HomePage(tk.Frame):
                             command=lambda: controller.show_frame(PageTwo))
         button2.pack()
 
+        button3 = ttk.Button(self, text="Best Days", style="Custom.TButton",
+                            command=lambda: controller.show_frame(PageThree))
+        button3.pack()
+
 
 class PageOne(tk.Frame):
     def __init__(self, parent, controller):
@@ -82,7 +86,7 @@ class PageOne(tk.Frame):
         entry1.pack()
 
         button1 = ttk.Button(self, text="Save",
-                             command=lambda: self.saveDay(entry1, v))
+                             command=lambda: [self.saveDay(entry1, v), controller.show_frame(HomePage)])
         button1.pack()
 
         button2 = ttk.Button(self, text="Main Menu",
@@ -96,15 +100,54 @@ class PageOne(tk.Frame):
             file.writelines(v.get() + " " + now.strftime("%m/%d/%Y, %H:%M:%S") + " " + INPUT + "\n")
 
 class PageTwo(tk.Frame):
+    holder = []
+    days = ""
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Look back on your best days.", font=LARGE_FONT)
+        label = ttk.Label(self, text="Look back on these past few days.", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
+
+        label2 = ttk.Label(self, text=self.lookBack(), wraplength=300,)
+        label2.pack()
 
         button1 = ttk.Button(self, text="Main Menu",
                             command=lambda: controller.show_frame(HomePage))
         button1.pack()
+
+    def lookBack(self):
+        with open("days.txt", "r") as file:
+            for line in file:
+                self.holder.append(line)
+        index = 0
+        wordcount = 0
+        while (index<1):
+            for line in self.holder:
+                for char in line:
+                    wordcount += 1
+
+            if (wordcount > 2000):
+                self.holder.pop(0)
+                wordcount = 0
+            else:
+                index+=1
+
+        for line in self.holder:
+            a = line[2:]
+            self.days = self.days + a + ""
+
+        return self.days
+class PageThree(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        label = ttk.Label(self, text = "Look back on your best days.", font=LARGE_FONT)
+        label.pack()
+
+        button2 = ttk.Button(self, text="Main Menu",
+                            command=lambda: controller.show_frame(HomePage))
+        button2.pack()
 
 app = App()
 app.mainloop()

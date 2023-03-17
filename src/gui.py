@@ -164,11 +164,8 @@ class PageThree(tk.Frame):
 
         for day in tops:
             if(int(day[0:1]) >= int(topDay[0:1])):
-                print("debug")
                 if(int(day[8:12]) >= int(topDay[8:12])):
-                    print("debug1")
                     if(int(day[2:4]) >= int(topDay[2:4])):
-                        print("debug2")
                         if(int(day[5:7]) >= int(topDay[5:7])):
                             topDay = day
                             topDays.append(day)
@@ -179,6 +176,11 @@ class PageThree(tk.Frame):
         return showTopDays
 
 
+try:
+    open("days.txt", "r")
+
+except IOError:
+    open("days.txt", "x")
 
 app = App()
 app.mainloop()

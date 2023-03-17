@@ -1,6 +1,10 @@
+import matplotlib
+import numpy as np
 import tkinter as tk
 import datetime as dt
 from tkinter import ttk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 LARGE_FONT= ("Verdana", 12)
 
@@ -44,6 +48,7 @@ class App(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+    
         
 class HomePage(tk.Frame): # homepage with 3 buttons
 
@@ -64,6 +69,51 @@ class HomePage(tk.Frame): # homepage with 3 buttons
                             command=lambda: controller.show_frame(PageThree))
         button3.pack()
 
+        label1 = ttk.Label(self, text="Your monthly average: " + str(self.monthlyAverage()))
+        label1.pack()
+
+        graph = Figure(figsize=(5,5), dpi=100)
+
+        plotpoints = []
+
+        with open("days.txt", "r") as file:
+            for line in file:
+                plotpoints.append(int(line[0:1]))
+
+        plot = graph.add_subplot(111)
+        plot.plot(plotpoints)
+        plot.set_xlabel("Entries")
+        plot.set_ylabel("Score")
+
+        canvas = FigureCanvasTkAgg(graph, master = self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas.get_tk_widget().pack()
+
+    def monthlyAverage(self):
+        monthRatings = []
+        days = 0
+        summative = 0
+        
+        currMonth = dt.datetime.now().month
+        with open("days.txt", "r") as file:
+            for line in file:
+                if(int(line[2:4]) == int(currMonth)):
+                    monthRatings.append(int(line[0:1]))
+
+        for i in monthRatings:
+            days += 1
+            summative += i
+
+        try:
+            summative/days
+        except:
+            return "You have no entries yet"
+        
+        return round(summative/days, 2)
 
 class PageOne(tk.Frame): # Page 1 with a button and a text entry
     def __init__(self, parent, controller):
@@ -104,7 +154,7 @@ class PageOne(tk.Frame): # Page 1 with a button and a text entry
             file.writelines(v.get() + " " + now.strftime("%m/%d/%Y, %H:%M:%S") + " " + INPUT + "\n")
 
 class PageTwo(tk.Frame):
-    holder = []
+    holder = [] # an in between allowing some data to be removed from the display
     days = ""
 
     def __init__(self, parent, controller):
@@ -125,7 +175,7 @@ class PageTwo(tk.Frame):
                 self.holder.append(line)
         index = 0
         wordcount = 0
-        while (index<1):
+        while (index<1): # loop to maintain that you can see all data displayed within the window
             for line in self.holder:
                 for char in line:
                     wordcount += 1
@@ -136,11 +186,11 @@ class PageTwo(tk.Frame):
             else:
                 index+=1
 
-        for line in self.holder:
+        for line in self.holder: # display of data
             a = line[2:]
             self.days = self.days + a + ""
 
-        return self.days
+        return self.days # saves it as a long string
 class PageThree(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -158,17 +208,17 @@ class PageThree(tk.Frame):
 
     def bestSearch(self):
         tops = []
-        topDay = "1101101111111111111111111111"
+        topDay = "1101101111111111111111111111" # a stand in date in case no entries exist at prior moment
         topDays = []
         showTopDays = ""
         with open("days.txt", "r") as file:
             for line in file:
-                if (int(line[0:1]) > 2):
+                if (int(line[0:1]) > 2): # retrieves all entries greater than 2
                     tops.append(line)
 
         for day in tops:
             if(int(day[0:1]) >= int(topDay[0:1])):
-                if(int(day[8:12]) >= int(topDay[8:12])): #only needed if data is ever unordered
+                if(int(day[8:12]) >= int(topDay[8:12])): # only needed if data is ever unordered
                     if(int(day[2:4]) >= int(topDay[2:4])):
                         if(int(day[5:7]) >= int(topDay[5:7])):
                             topDay = day
@@ -181,10 +231,10 @@ class PageThree(tk.Frame):
 
 
 try:
-    open("days.txt", "r")
+    open("days.txt", "r") # try and catch in case days does not open
 
 except IOError:
-    open("days.txt", "x")
+    open("days.txt", "x") # creates days if days does not already exist
 
 app = App()
 app.mainloop()

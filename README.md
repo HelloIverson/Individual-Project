@@ -6,3 +6,4 @@ Logic flow diagram:
 <img src="mentallogic.png">
 
 There is an exe located in the dist folder, however I'm not sure on whether or not the exe is on the latest version but it has a functional version of the app.
+Since school computer bad you can just run gui.py in src/src

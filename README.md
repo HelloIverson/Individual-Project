@@ -4,3 +4,5 @@ Mental health is a serious issue for our generation and many times it seems that
 
 Logic flow diagram:
 <img src="mentallogic.png">
+
+There is an exe located in the dist folder, however I'm not sure on whether or not the exe is on the latest version but it has a functional version of the app.
